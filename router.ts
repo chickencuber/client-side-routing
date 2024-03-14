@@ -57,5 +57,6 @@ const Router = new (class {
     return this;
   }
   start() {
+    console.log(location.href);
   }
 })();
