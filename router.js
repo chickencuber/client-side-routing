@@ -31,6 +31,7 @@ const Router = new (class {
     }
     start() {
         const url = location.href.split("/").filter(v => v !== "");
-        console.log(url);
+        for (let i = 0; i < 2 + this.options.ignoreSegment; i++)
+            url.shift();
     }
 })();
