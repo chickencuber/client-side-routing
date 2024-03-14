@@ -57,7 +57,7 @@ const Router = new (class {
     return this;
   }
   start() {
-    const url = location.href.split("/").filter(v => v === "");
+    const url = location.href.split("/").filter(v => v !== "");
     console.log(url);
   }
 })();
