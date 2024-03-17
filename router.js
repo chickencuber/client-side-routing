@@ -54,25 +54,27 @@ const Router = new (class {
         if (segment.startsWith(":")) {
             return { segment: segment.slice(1), dynamic: true };
         }
-        return { segment: segment.startsWith("|") ? segment.slice(1) : segment, dynamic: false };
+        return {
+            segment: segment.startsWith("|") ? segment.slice(1) : segment,
+            dynamic: false,
+        };
     }
     getParams(params) {
         const obj = {};
         new URLSearchParams("?" + Object.keys(urlParams).map(([k, v]) => `${k}=${v}`).join("&")).forEach((v, k) => (obj[k] = v));
-        return "?redirect=" + location.href.slice(0, location.href.length - location.search.length) + (Object.keys(params).length > 0 ?
-            "&" + Object.keys(params).map(([k, v]) => `${k}=${v}`).join("&") :
-            "") + (Object.keys(obj).length > 0 ?
-            "&params=" + JSON.stringify(obj) :
-            "");
+        return "?redirect=" +
+            location.href.slice(0, location.href.length - location.search.length) + (Object.keys(params).length > 0
+            ? "&" + Object.keys(params).map(([k, v]) => `${k}=${v}`).join("&")
+            : "") + (Object.keys(obj).length > 0 ? "&params=" + JSON.stringify(obj) : "");
     }
     start() {
-        const url = location.href.slice(0, location.href.length - location.search.length).split("/").filter(v => v !== "");
+        const url = location.href.slice(0, location.href.length - location.search.length).split("/").filter((v) => v !== "");
         const ignored = [];
         for (let i = 0; i < 2 + this.options.ignoreSegment; i++) {
             ignored.push(url.shift());
         }
         for (const [k, v] of Object.entries(this.routes)) {
-            const route = k.split("/").filter(v => v !== "");
+            const route = k.split("/").filter((v) => v !== "");
             if (route.length !== url.length)
                 continue;
             let e = true;
@@ -91,8 +93,11 @@ const Router = new (class {
             }
             if (e) {
                 ignored.splice(1, 0, "");
-                window.open(ignored.join("/") + v + this.getParams(params), "_self");
+                f = () => {
+                    window.open(ignored.join("/") + v + this.getParams(params), "_self");
+                };
             }
         }
     }
 })();
+let f;
