@@ -1,24 +1,4 @@
 "use strict";
-const urlParams = (() => {
-    const obj = {};
-    new URLSearchParams(location.search).forEach((v, k) => (obj[k] = v));
-    const params = {};
-    let urlParams = "";
-    if (obj.params) {
-        const p = Object.entries(JSON.parse(obj.params));
-        p.forEach(([k, v]) => params[k] = v);
-        urlParams = "?" + p.map(([k, v]) => `${k}=${v}`).join("&");
-    }
-    if (obj.redirect) {
-        history.replaceState(null, "", obj.redirect + urlParams);
-        delete obj.redirect;
-    }
-    Object.entries(obj).forEach(([k, v]) => {
-        params[k] = v;
-    });
-    Object.freeze(params);
-    return params;
-})();
 const Router = new (class {
     options = {
         ignoreSegment: 0,
@@ -60,7 +40,16 @@ const Router = new (class {
     }
     getParams(params) {
         const obj = {};
-        new URLSearchParams("?" + Object.keys(urlParams).map(([k, v]) => `${k}=${v}`).join("&")).forEach((v, k) => (obj[k] = v));
+        new URLSearchParams(location.search).forEach((v, k) => (obj[k] = v));
+        if (obj.redirect) {
+            const url = obj.redirect;
+            delete obj.redirect;
+            return "?redirect=" + url + (Object.keys(params).length > 0
+                ? "&" + Object.entries(params).map(([k, v]) => `${k}=${v}`).join("&")
+                : "") + (Object.keys(obj).length > 0
+                ? "&" + Object.entries(obj).map(([k, v]) => `${k}=${v}`).join("&")
+                : "");
+        }
         return "?redirect=" +
             location.href.slice(0, location.href.length - location.search.length) + (Object.keys(params).length > 0
             ? "&" + Object.entries(params).map(([k, v]) => `${k}=${v}`).join("&")
