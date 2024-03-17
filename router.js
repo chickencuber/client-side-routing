@@ -93,11 +93,9 @@ const Router = new (class {
             }
             if (e) {
                 ignored.splice(1, 0, "");
-                f = () => {
-                    window.open(ignored.join("/") + v + this.getParams(params), "_self");
-                };
+                console.log(ignored.join("/") + v + this.getParams(params));
+                //window.open(ignored.join("/") + v + this.getParams(params), "_self");
             }
         }
     }
 })();
-let f;
