@@ -10,6 +10,27 @@ interface Route {
   ) => this;
 }
 
+const urlParams = (() => {
+  const obj: Record<string, string> = {};
+  new URLSearchParams(location.search).forEach((v, k) => (obj[k] = v));
+  const params: Record<string, string> = {};
+  let urlParams = "";
+  if(obj.params) {
+      const p = Object.entries(JSON.parse(obj.params));
+      p.forEach(([k, v]) => params[k] = v as string);
+      urlParams = "?" + p.map(([k, v]) => `${k}=${v}`).join("&");
+      delete obj.params;
+  }
+  if(obj.redirect) {
+      history.replaceState(null, "", obj.redirect + urlParams);
+      delete obj.redirect;
+  }
+  Object.defineProperties(params, obj);
+  Object.freeze(params);
+  return params;
+})()
+
+
 const Router = new (class {
   options: {
     ignoreSegment: number;
@@ -64,7 +85,7 @@ const Router = new (class {
   }
   private getParams(params: Record<string, string>): string {
     const obj: Record<string, string> = {};
-    new URLSearchParams(location.search).forEach((v, k) => (obj[k] = v));
+    new URLSearchParams("?" + Object.keys(urlParams).map(([k, v]) => `${k}=${v}`).join("&")).forEach((v, k) => (obj[k] = v));
     return "?redirect=" + location.href.slice(0, location.href.length - location.search.length) + (
       Object.keys(params).length > 0?
       "&" + Object.keys(params).map(([k, v]) => `${k}=${v}`).join("&"):
