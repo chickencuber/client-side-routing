@@ -15,23 +15,22 @@ const urlParams = (() => {
   new URLSearchParams(location.search).forEach((v, k) => (obj[k] = v));
   const params: Record<string, string> = {};
   let urlParams = "";
-  if(obj.params) {
-      const p = Object.entries(JSON.parse(obj.params));
-      p.forEach(([k, v]) => params[k] = v as string);
-      urlParams = "?" + p.map(([k, v]) => `${k}=${v}`).join("&");
-      delete obj.params;
+  if (obj.params) {
+    const p = Object.entries(JSON.parse(obj.params));
+    p.forEach(([k, v]) => params[k] = v as string);
+    urlParams = "?" + p.map(([k, v]) => `${k}=${v}`).join("&");
+    delete obj.params;
   }
-  if(obj.redirect) {
-      history.replaceState(null, "", obj.redirect + urlParams);
-      delete obj.redirect;
+  if (obj.redirect) {
+    history.replaceState(null, "", obj.redirect + urlParams);
+    delete obj.redirect;
   }
   Object.entries(obj).forEach(([k, v]) => {
     params[k] = v;
-  })
+  });
   Object.freeze(params);
   return params;
-})()
-
+})();
 
 const Router = new (class {
   options: {
@@ -130,9 +129,13 @@ const Router = new (class {
       }
       if (e) {
         ignored.splice(1, 0, "");
-        console.log(ignored.join("/") + v + this.getParams(params));
-        //window.open(ignored.join("/") + v + this.getParams(params), "_self");
+        console.log(ignored.join("/") + v + this.getParams(params), params, this.getParams(params));
+        f = () => {
+          window.open(ignored.join("/") + v + this.getParams(params), "_self");
+        };
       }
     }
   }
 })();
+
+let f;
