@@ -8,7 +8,6 @@ const urlParams = (() => {
         const p = Object.entries(JSON.parse(obj.params));
         p.forEach(([k, v]) => params[k] = v);
         urlParams = "?" + p.map(([k, v]) => `${k}=${v}`).join("&");
-        delete obj.params;
     }
     if (obj.redirect) {
         history.replaceState(null, "", obj.redirect + urlParams);
@@ -64,7 +63,7 @@ const Router = new (class {
         new URLSearchParams("?" + Object.keys(urlParams).map(([k, v]) => `${k}=${v}`).join("&")).forEach((v, k) => (obj[k] = v));
         return "?redirect=" +
             location.href.slice(0, location.href.length - location.search.length) + (Object.keys(params).length > 0
-            ? "&" + Object.keys(params).map(([k, v]) => `${k}=${v}`).join("&")
+            ? "&" + Object.entries(params).map(([k, v]) => `${k}=${v}`).join("&")
             : "") + (Object.keys(obj).length > 0 ? "&params=" + JSON.stringify(obj) : "");
     }
     start() {
