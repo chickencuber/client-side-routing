@@ -120,13 +120,8 @@ const Router = new (class {
       }
       if (e) {
         ignored.splice(1, 0, "");
-        console.log(ignored.join("/") + v + this.getParams(params), params, this.getParams(params));
-        f = () => {
-          window.open(ignored.join("/") + v + this.getParams(params), "_self");
-        };
+        window.open(ignored.join("/") + v + this.getParams(params), "_self");
       }
     }
   }
 })();
-
-let f;
