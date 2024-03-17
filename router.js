@@ -36,11 +36,13 @@ const Router = new (class {
         return { segment: segment.startsWith("|") ? segment.slice(1) : segment, dynamic: false };
     }
     getParams(params) {
-        return (location.search === "" ?
-            "?" :
-            location.search + (Object.keys(params).length > 0 ?
-                "&" + Object.entries(params).map(([k, v]) => k + "=" + v).join("&") :
-                ""));
+        const obj = {};
+        new URLSearchParams(location.search).forEach((v, k) => (obj[k] = v));
+        return "?redirect=" + location.href.slice(0, location.href.length - location.search.length) + (Object.keys(params).length > 0 ?
+            "&" + Object.keys(params).map(([k, v]) => `${k}=${v}`).join("&") :
+            "") + (Object.keys(obj).length > 0 ?
+            "&" + JSON.stringify(obj) :
+            "");
     }
     start() {
         const url = location.href.slice(0, location.href.length - location.search.length).split("/").filter(v => v !== "");
