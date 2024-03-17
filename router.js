@@ -29,10 +29,37 @@ const Router = new (class {
         }
         return this;
     }
+    parseSegment(segment) {
+        if (segment.startsWith(":")) {
+            return { segment: segment.slice(1), dynamic: true };
+        }
+        return { segment: segment.startsWith("|") ? segment.slice(1) : segment, dynamic: false };
+    }
     start() {
-        const url = location.href.split("/").filter(v => v !== "");
-        for (let i = 0; i < 2 + this.options.ignoreSegment; i++)
-            url.shift();
-        console.log(url);
+        const url = location.href.slice(0, location.href.length - location.search.length).split("/").filter(v => v !== "");
+        const ignored = url.slice(0, 2 + this.options.ignoreSegment);
+        for (const [k, v] of Object.entries(this.routes)) {
+            const route = k.split("/").filter(v => v !== "");
+            if (route.length !== url.length)
+                continue;
+            let e = true;
+            const params = {};
+            for (const [u, r] of structuredClone(url).map((v, i) => [v, route[i]])) {
+                const parsedRoute = this.parseSegment(r);
+                if (parsedRoute.dynamic) {
+                    params[parsedRoute.segment] = u;
+                }
+                else {
+                    if (u !== parsedRoute.segment) {
+                        e = false;
+                        break;
+                    }
+                }
+            }
+            if (e) {
+                ignored.splice(1, 0, "");
+                window.open(ignored.join("/") + v, "_self");
+            }
+        }
     }
 })();
