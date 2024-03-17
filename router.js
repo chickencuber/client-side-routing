@@ -35,6 +35,13 @@ const Router = new (class {
         }
         return { segment: segment.startsWith("|") ? segment.slice(1) : segment, dynamic: false };
     }
+    getParams(params) {
+        return (location.search === "" ?
+            "?" :
+            location.search + (Object.keys(params).length > 0 ?
+                "&" + Object.entries(params).map(([k, v]) => k + "=" + v).join("&") :
+                ""));
+    }
     start() {
         const url = location.href.slice(0, location.href.length - location.search.length).split("/").filter(v => v !== "");
         const ignored = [];
@@ -43,7 +50,6 @@ const Router = new (class {
         }
         for (const [k, v] of Object.entries(this.routes)) {
             const route = k.split("/").filter(v => v !== "");
-            console.log(url, route);
             if (route.length !== url.length)
                 continue;
             let e = true;
@@ -62,8 +68,7 @@ const Router = new (class {
             }
             if (e) {
                 ignored.splice(1, 0, "");
-                console.log(ignored.join("/") + v);
-                window.open(ignored.join("/") + v, "_self");
+                window.open(ignored.join("/") + v + this.getParams(params), "_self");
             }
         }
     }
