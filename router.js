@@ -14,7 +14,9 @@ const urlParams = (() => {
         history.replaceState(null, "", obj.redirect + urlParams);
         delete obj.redirect;
     }
-    Object.defineProperties(params, obj);
+    Object.entries(obj).forEach(([k, v]) => {
+        params[k] = v;
+    });
     Object.freeze(params);
     return params;
 })();
