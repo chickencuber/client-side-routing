@@ -41,7 +41,7 @@ const Router = new (class {
         return "?redirect=" + location.href.slice(0, location.href.length - location.search.length) + (Object.keys(params).length > 0 ?
             "&" + Object.keys(params).map(([k, v]) => `${k}=${v}`).join("&") :
             "") + (Object.keys(obj).length > 0 ?
-            "&" + JSON.stringify(obj) :
+            "&params=" + JSON.stringify(obj) :
             "");
     }
     start() {

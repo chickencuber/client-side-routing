@@ -71,7 +71,7 @@ const Router = new (class {
       ""
     ) + (
       Object.keys(obj).length > 0?
-      "&" + JSON.stringify(obj):
+      "&params=" + JSON.stringify(obj):
       ""
     );
   }
