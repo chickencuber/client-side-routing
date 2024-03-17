@@ -40,6 +40,7 @@ const Router = new (class {
         const ignored = url.slice(0, 2 + this.options.ignoreSegment);
         for (const [k, v] of Object.entries(this.routes)) {
             const route = k.split("/").filter(v => v !== "");
+            console.log(url, route);
             if (route.length !== url.length)
                 continue;
             let e = true;
