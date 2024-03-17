@@ -64,7 +64,10 @@ const Router = new (class {
   }
   start() {
     const url = location.href.slice(0, location.href.length - location.search.length).split("/").filter(v => v !== "");
-    const ignored = url.slice(0, 2 + this.options.ignoreSegment);
+    const ignored: string[] = [];
+    for(let i = 0; i < 2 + this.options.ignoreSegment; i++) {
+      ignored.push(url.shift()!);
+    }
 
     for(const [k, v] of Object.entries(this.routes)) {
       const route = k.split("/").filter(v => v !== "");
@@ -85,6 +88,7 @@ const Router = new (class {
       }
       if(e) {
         ignored.splice(1, 0, "");
+        console.log(ignored.join("/") + v);
         window.open(ignored.join("/") + v, "_self");
       }
     }
