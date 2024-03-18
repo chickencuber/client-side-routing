@@ -21,7 +21,7 @@ const Router = new (class {
       string,
       string | ((params: Record<string, string>) => string | Element)
     > = {
-      _404: () => `<!DOCTYPE html>
+      _404: () => `
       <html lang="en">
         <head>
           <meta charset="utf-8" />

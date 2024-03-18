@@ -5,7 +5,7 @@ const Router = new (class {
     };
     Route = class {
         routes = {
-            _404: () => `<!DOCTYPE html>
+            _404: () => `
       <html lang="en">
         <head>
           <meta charset="utf-8" />
