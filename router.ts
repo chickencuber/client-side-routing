@@ -20,7 +20,20 @@ const Router = new (class {
     routes: Record<
       string,
       string | ((params: Record<string, string>) => string | Element)
-    > = {};
+    > = {
+      _404: () => `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="utf-8" />
+        </head>
+        <body>
+          <main>
+            <div>404<br/>page not found</div>
+          </main>
+        </body>
+      </html>
+      `
+    };
     route(
       route: string,
       location: string | ((params: Record<string, string>) => string | Element),
@@ -68,9 +81,9 @@ const Router = new (class {
   private getParams(params: Record<string, string>): string {
     const obj: Record<string, string> = {};
     new URLSearchParams(
-      location.search
+      location.search,
     ).forEach((v, k) => (obj[k] = v));
-    if(obj.redirect) {
+    if (obj.redirect) {
       const url = obj.redirect;
       delete obj.redirect;
       return "?redirect=" + url + (
@@ -119,9 +132,42 @@ const Router = new (class {
         }
       }
       if (e) {
-        ignored.splice(1, 0, "");
-        window.open(ignored.join("/") + v + this.getParams(params), "_self");
+        if (v instanceof Function) {
+          const obj: Record<string, string> = {};
+          new URLSearchParams(
+          location.search,
+          ).forEach((v, k) => (obj[k] = v));
+          let URLParams = "";
+          const params: Record<string, string> = {};
+          if(obj.params) {
+            URLParams = "?" + Object.entries(JSON.parse(obj.params)).map(([k, v]) => {
+              params[k] = v as string;
+              return `${k}=${v}`;
+            }).join("&");
+            delete obj.params
+          }
+          if(obj.redirect) {
+            history.replaceState(null, "", obj.redirect + URLParams);
+            delete obj.redirect;
+          }
+          Object.entries(obj).forEach(([k, v]) => params[k] = v);
+          const r = v(params);
+          if(typeof r === "string") {
+            document.open();
+            document.write(r);
+            document.close();
+          } else if (r instanceof Element) {
+            document.open();
+            document.write(r.outerHTML);
+            document.close();
+          }
+        } else {
+          ignored.splice(1, 0, "");
+          window.open(ignored.join("/") + v + this.getParams(params), "_self");
+        }
       }
     }
+    ignored.splice(1, 0, "");
+    //window.open(ignored.join("/") + "_404" + this.getParams(params), "_self");
   }
 })();

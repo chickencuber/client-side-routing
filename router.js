@@ -4,7 +4,20 @@ const Router = new (class {
         ignoreSegment: 0,
     };
     Route = class {
-        routes = {};
+        routes = {
+            _404: () => `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="utf-8" />
+        </head>
+        <body>
+          <main>
+            <div>404<br/>page not found</div>
+          </main>
+        </body>
+      </html>
+      `
+        };
         route(route, location, children) {
             this.routes[route] = location;
             if (children instanceof Function) {
@@ -80,9 +93,42 @@ const Router = new (class {
                 }
             }
             if (e) {
-                ignored.splice(1, 0, "");
-                window.open(ignored.join("/") + v + this.getParams(params), "_self");
+                if (v instanceof Function) {
+                    const obj = {};
+                    new URLSearchParams(location.search).forEach((v, k) => (obj[k] = v));
+                    let URLParams = "";
+                    const params = {};
+                    if (obj.params) {
+                        URLParams = "?" + Object.entries(JSON.parse(obj.params)).map(([k, v]) => {
+                            params[k] = v;
+                            return `${k}=${v}`;
+                        }).join("&");
+                        delete obj.params;
+                    }
+                    if (obj.redirect) {
+                        history.replaceState(null, "", obj.redirect + URLParams);
+                        delete obj.redirect;
+                    }
+                    Object.entries(obj).forEach(([k, v]) => params[k] = v);
+                    const r = v(params);
+                    if (typeof r === "string") {
+                        document.open();
+                        document.write(r);
+                        document.close();
+                    }
+                    else if (r instanceof Element) {
+                        document.open();
+                        document.write(r.outerHTML);
+                        document.close();
+                    }
+                }
+                else {
+                    ignored.splice(1, 0, "");
+                    window.open(ignored.join("/") + v + this.getParams(params), "_self");
+                }
             }
         }
+        ignored.splice(1, 0, "");
+        //window.open(ignored.join("/") + "_404" + this.getParams(params), "_self");
     }
 })();
