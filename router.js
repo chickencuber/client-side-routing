@@ -6,6 +6,7 @@ const Router = new (class {
     Route = class {
         routes = {
             _404: () => `
+      <!DOCTYPE html>
       <html lang="en">
         <head>
           <meta charset="utf-8" />
@@ -16,7 +17,7 @@ const Router = new (class {
           </main>
         </body>
       </html>
-      `
+      `,
         };
         route(route, location, children) {
             this.routes[route] = location;
@@ -99,10 +100,11 @@ const Router = new (class {
                     let URLParams = "";
                     const params = {};
                     if (obj.params) {
-                        URLParams = "?" + Object.entries(JSON.parse(obj.params)).map(([k, v]) => {
-                            params[k] = v;
-                            return `${k}=${v}`;
-                        }).join("&");
+                        URLParams = "?" +
+                            Object.entries(JSON.parse(obj.params)).map(([k, v]) => {
+                                params[k] = v;
+                                return `${k}=${v}`;
+                            }).join("&");
                         delete obj.params;
                     }
                     if (obj.redirect) {

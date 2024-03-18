@@ -22,6 +22,7 @@ const Router = new (class {
       string | ((params: Record<string, string>) => string | Element)
     > = {
       _404: () => `
+      <!DOCTYPE html>
       <html lang="en">
         <head>
           <meta charset="utf-8" />
@@ -32,7 +33,7 @@ const Router = new (class {
           </main>
         </body>
       </html>
-      `
+      `,
     };
     route(
       route: string,
@@ -135,24 +136,25 @@ const Router = new (class {
         if (v instanceof Function) {
           const obj: Record<string, string> = {};
           new URLSearchParams(
-          location.search,
+            location.search,
           ).forEach((v, k) => (obj[k] = v));
           let URLParams = "";
           const params: Record<string, string> = {};
-          if(obj.params) {
-            URLParams = "?" + Object.entries(JSON.parse(obj.params)).map(([k, v]) => {
-              params[k] = v as string;
-              return `${k}=${v}`;
-            }).join("&");
-            delete obj.params
+          if (obj.params) {
+            URLParams = "?" +
+              Object.entries(JSON.parse(obj.params)).map(([k, v]) => {
+                params[k] = v as string;
+                return `${k}=${v}`;
+              }).join("&");
+            delete obj.params;
           }
-          if(obj.redirect) {
+          if (obj.redirect) {
             history.replaceState(null, "", obj.redirect + URLParams);
             delete obj.redirect;
           }
           Object.entries(obj).forEach(([k, v]) => params[k] = v);
           const r = v(params);
-          if(typeof r === "string") {
+          if (typeof r === "string") {
             document.open();
             document.write(r);
             document.close();
