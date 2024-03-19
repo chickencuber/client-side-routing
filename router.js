@@ -127,6 +127,7 @@ const Router = new (class {
                 else {
                     ignored.splice(1, 0, "");
                     window.open(ignored.join("/") + v + this.getParams(params), "_self");
+                    return;
                 }
             }
         }
