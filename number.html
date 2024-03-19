@@ -17,8 +17,8 @@
         <script>
             if(params.amount) {
                 $("#amount").text(params.amount);
-                $("#last").props({href: "./" + parseInt(params.amount) - 1})
-                $("#next").props({href: "./" + parseInt(params.amount) + 1})
+                $("#last").props({href: "./" + (parseInt(params.amount) - 1)})
+                $("#next").props({href: "./" + (parseInt(params.amount) + 1)})
             } else {
                 $("#last").props({href: "./" + "-1"})
                 $("#next").props({href: "./" + "1"})
