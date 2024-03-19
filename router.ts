@@ -170,6 +170,6 @@ const Router = new (class {
       }
     }
     ignored.splice(1, 0, "");
-    window.open(ignored.join("/") + "_404" + this.getParams(params), "_self");
+    window.open(ignored.join("/") + "_404" + this.getParams({}), "_self");
   }
 })();
