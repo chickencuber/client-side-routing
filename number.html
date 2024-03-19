@@ -2,8 +2,12 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <script src="https://cdn.jsdelivr.net/gh/chickencuber/client-side-routing/routed.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/chickencuber/jsquery@latest/jsquery.js"></script>
     </head>
     <body>
-        <script src="https://cdn.jsdelivr.net/gh/chickencuber/client-side-routing/routed.js"></script>
+        <script>
+            $.body().child($.create("div").text(params.amount));
+        </script>
     </body>
 </html>
