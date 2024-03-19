@@ -107,6 +107,9 @@ const Router = new (class {
       );
   }
   start() {
+    this.start = () => {
+      console.warn("start method already called");
+    }
     const url = location.href.slice(
       0,
       location.href.length - location.search.length,

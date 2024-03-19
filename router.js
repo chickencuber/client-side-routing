@@ -70,6 +70,9 @@ const Router = new (class {
             : "") + (Object.keys(obj).length > 0 ? "&params=" + JSON.stringify(obj) : "");
     }
     start() {
+        this.start = () => {
+            console.warn("start method already called");
+        };
         const url = location.href.slice(0, location.href.length - location.search.length).split("/").filter((v) => v !== "");
         const ignored = [];
         for (let i = 0; i < 2 + this.options.ignoreSegment; i++) {
