@@ -6,18 +6,18 @@ const Router = new (class {
     Route = class {
         routes = {
             _404: () => `
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="utf-8" />
-        </head>
-        <body>
-          <main>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+            <meta charset="utf-8" />
+            </head>
+            <body>
+            <main>
             <div>404<br/>page not found</div>
-          </main>
-        </body>
-      </html>
-      `,
+            </main>
+            </body>
+            </html>
+            `,
         };
         route(route, location, children) {
             this.routes[route] = location;
@@ -31,7 +31,21 @@ const Router = new (class {
             return this;
         }
     };
-    routes = {};
+    routes = {
+        _404: () => `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="utf-8" />
+        </head>
+        <body>
+        <main>
+        <div>404<br/>page not found</div>
+        </main>
+        </body>
+        </html>
+        `
+    };
     route(route, location, children) {
         this.routes[route] = location;
         if (children instanceof Function) {
